@@ -1,0 +1,65 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum USER_ROLES {
+  USER
+  ADMIN
+}
+
+model User {
+  id            Int             @id @unique @default(autoincrement())
+  username      String          @unique
+  password      String
+  role          USER_ROLES      @default(USER)
+  isBanned      Boolean         @default(false)
+  ReviewRecepie ReviewRecepie[]
+}
+
+enum Categories {
+  SPICY
+  GRILL
+  RUSSIAN
+  ASIAN
+  NATIONAL
+}
+
+model Recept {
+  id            Int             @id @unique @default(autoincrement())
+  title         String          @unique
+  category      Categories
+  images        String?       
+  createdAt     DateTime        @default(now())
+  ratings       Rating[]
+  ReviewRecepie ReviewRecepie[]
+  description   String
+}
+
+model Rating {
+  id       Int    @id @unique @default(autoincrement())
+  receptId Int
+  recept   Recept @relation(fields: [receptId], references: [id])
+  rating   Float
+}
+
+model ReviewRecepie {
+  id       Int      @id @unique @default(autoincrement())
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int
+  recepie  Recept   @relation(fields: [receptId], references: [id])
+  receptId Int
+  Review   Review[]
+}
+
+model Review {
+  id              Int           @id @unique @default(autoincrement())
+  comment         String
+  review          ReviewRecepie @relation(fields: [reviewRecepieId], references: [id])
+  reviewRecepieId Int
+}
