@@ -96,3 +96,13 @@ export const banUser = async (req: Request, res: Response) => {
 		});
 	}
 };
+
+export const getAllUsers = async (req: Request, res: Response) => {
+	try {
+		const users = await db.user.findMany();
+		return res.status(200).json(users);
+	} catch (error) {
+		console.error(error);
+		return res.sendStatus(500);
+	}
+};

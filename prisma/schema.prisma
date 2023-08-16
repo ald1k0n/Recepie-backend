@@ -42,7 +42,7 @@ model Recept {
 }
 
 model Rating {
-  id       Int    @id @unique @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   receptId Int
   recept   Recept @relation(fields: [receptId], references: [id])
   rating   Float
